@@ -1,0 +1,106 @@
+🏨 DATABASE CREATION
+CREATE DATABASE hostel_db;
+USE hostel_db;
+👨‍🎓 1. STUDENT
+CREATE TABLE Student (
+    student_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    dob DATE,
+    gender VARCHAR(10),
+    phone VARCHAR(15),
+    parent_number VARCHAR(15)
+);
+🍽️ 2. MESS
+CREATE TABLE Mess (
+    mess_id INT PRIMARY KEY,
+    mess_name VARCHAR(50),
+    coupon VARCHAR(50),
+    fee DECIMAL(10,2)
+);
+🔗 3. STUDENT_MESS
+CREATE TABLE Student_Mess (
+    student_id INT,
+    mess_id INT,
+    PRIMARY KEY (student_id, mess_id),
+    FOREIGN KEY (student_id) REFERENCES Student(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (mess_id) REFERENCES Mess(mess_id) ON DELETE CASCADE
+);
+💳 4. PAYMENT
+CREATE TABLE Payment (
+    payment_id INT PRIMARY KEY,
+    student_id INT,
+    amount DECIMAL(10,2),
+    payment_date DATE,
+    payment_mode VARCHAR(20),
+    status VARCHAR(20),
+    FOREIGN KEY (student_id) REFERENCES Student(student_id) ON DELETE CASCADE
+);
+🏢 5. BLOCK
+CREATE TABLE Block (
+    block_id INT PRIMARY KEY,
+    block_name VARCHAR(50),
+    location VARCHAR(50)
+);
+🛏️ 6. ROOM
+CREATE TABLE Room (
+    room_id INT PRIMARY KEY,
+    block_id INT,
+    room_type VARCHAR(20),
+    capacity INT,
+    status VARCHAR(20),
+    FOREIGN KEY (block_id) REFERENCES Block(block_id) ON DELETE CASCADE
+);
+🔗 7. ALLOCATION
+CREATE TABLE Allocation (
+    student_id INT,
+    room_id INT,
+    allocation_date DATE,
+    PRIMARY KEY (student_id, room_id),
+    FOREIGN KEY (student_id) REFERENCES Student(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE CASCADE
+);
+🧰 8. FACILITY
+CREATE TABLE Facility (
+    facility_id INT PRIMARY KEY,
+    facility_name VARCHAR(50),
+    availability VARCHAR(20)
+);
+🔗 9. BLOCK_FACILITY
+CREATE TABLE Block_Facility (
+    block_id INT,
+    facility_id INT,
+    PRIMARY KEY (block_id, facility_id),
+    FOREIGN KEY (block_id) REFERENCES Block(block_id) ON DELETE CASCADE,
+    FOREIGN KEY (facility_id) REFERENCES Facility(facility_id) ON DELETE CASCADE
+);
+👨‍💼 10. MANAGER
+CREATE TABLE Manager (
+    manager_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    phone VARCHAR(15)
+);
+🔗 11. BLOCK_MANAGER
+CREATE TABLE Block_Manager (
+    block_id INT,
+    manager_id INT,
+    PRIMARY KEY (block_id, manager_id),
+    FOREIGN KEY (block_id) REFERENCES Block(block_id) ON DELETE CASCADE,
+    FOREIGN KEY (manager_id) REFERENCES Manager(manager_id) ON DELETE CASCADE
+);
+🔐 12. USER (For JWT Authentication)
+CREATE TABLE User (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE,
+    password VARCHAR(255)
+);
+✅ OPTIONAL IMPROVEMENTS (Recommended)
+Add AUTO_INCREMENT
+ALTER TABLE Student MODIFY student_id INT AUTO_INCREMENT;
+ALTER TABLE Payment MODIFY payment_id INT AUTO_INCREMENT;
+ALTER TABLE Block MODIFY block_id INT AUTO_INCREMENT;
+ALTER TABLE Room MODIFY room_id INT AUTO_INCREMENT;
+ALTER TABLE Facility MODIFY facility_id INT AUTO_INCREMENT;
+ALTER TABLE Manager MODIFY manager_id INT AUTO_INCREMENT;
+Add ENUM for status (Better Design)
+ALTER TABLE Room MODIFY status ENUM('Available', 'Occupied');
+ALTER TABLE Payment MODIFY status ENUM('Paid', 'Pending', 'Failed');
